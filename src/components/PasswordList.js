@@ -1,30 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { FlatList, View, Text, StyleSheet } from 'react-native';
-import * as SecureStore from 'expo-secure-store';
-import { Button, Text, View, StyleSheet, TouchableOpacity } from 'react-native';
 
-const PasswordList = () => {
-  const [passwords, setPasswords] = useState([]);
-
-  const getSavedPasswords = async () => {
-    try {
-      const result = await SecureStore.getItemAsync('passwords');
-      if (result) {
-        setPasswords(JSON.parse(result));
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  useEffect(() => {
-    getSavedPasswords();
-  }, []);
-
+const PasswordList = ({ passwords }) => {
   const renderPassword = ({ item }) => {
     return (
       <View style={styles.passwordContainer}>
-        <Text style={styles.password}>{item}</Text>
+        <Text style={styles.passwordName}>{item.name}</Text>
+        <Text style={styles.passwordValue}>{item.value}</Text>
       </View>
     );
   };
@@ -38,7 +20,7 @@ const PasswordList = () => {
         <FlatList
           data={passwords}
           renderItem={renderPassword}
-          keyExtractor={(item) => item}
+          keyExtractor={(item) => item.value}
         />
       )}
     </View>
@@ -62,7 +44,11 @@ const styles = StyleSheet.create({
   passwordContainer: {
     marginBottom: 10,
   },
-  password: {
+  passwordName: {
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  passwordValue: {
     fontSize: 20,
   },
 });
